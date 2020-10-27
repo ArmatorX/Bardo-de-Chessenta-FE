@@ -39,20 +39,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr ng-repeat="cancion in canciones"> -->
-                            <tr>
-                                <!-- <td>{{ cancion.nombre }}</td>
-                                <td>{{ cancion.extra }}</td>
-                                <td>{{ cancion.emocion }}</td>
-                                <td>{{ cancion.lugar }}</td>
-                                <td>{{ cancion.partida }}</td> -->
-                                <td><p>cancion.nombre</p></td>
+                            <tr *ngFor="let cancion of canciones">
+                            <!-- <tr> -->
+                                <td><p>{{ cancion.nombre }}</p></td>
+                                <td><p>{{ cancion.extras }}</p></td>
+                                <td><p>{{ cancion.emocion.nombre }}</p></td>
+                                <td><p>{{ cancion.lugar.nombre }}</p></td>
+                                <td><p>{{ cancion.partida }}</p></td>
+                                <!-- <td><p>cancion.nombre</p></td>
                                 <td><p>cancion.extra</p></td>
                                 <td><p>cancion.emocion</p></td>
                                 <td><p>cancion.lugar</p></td>
-                                <td><p>cancion.partida</p></td> 
+                                <td><p>cancion.partida</p></td>  -->
                                 <td id="botones">
-                                    <button class="btn btn-primary btn-sm m-1">
+                                    <button (click)="reproducir(cancion.id)" class="btn btn-primary btn-sm m-1">
                                         <span data-feather="play"></span>
                                     </button>
 
