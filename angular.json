@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "Bardo-de-Chessenta-FE"
+    }
+  },
+  "defaultProject": "Bardo-de-Chessenta-FE",
+  "cli": {
+    "analytics": "064f5a1e-429e-4b5c-8531-2d8b880b9c89"
+  }
 }
