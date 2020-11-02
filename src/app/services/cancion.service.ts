@@ -17,13 +17,13 @@ export class CancionService {
         return this._http.get<Cancion[]>(this._url.getUrlBaseCancion(), {params : params});
     }
 
-    guardarCancion(cancion : Cancion) : Observable<any> {
-        return this._http.post<Cancion[]>(this._url.getUrlBaseCancion(), {params : null})
-    }
-
     reproducir(cancionId : number) : any {
         return this._http.get<any>(this._url.getUrlBaseReproductor() + cancionId.toString());
     }
+    
+    guardarCancion(cancion : Cancion) : Observable<any> {
+        return this._http.post<Cancion[]>(this._url.getUrlBaseCancion(), cancion);
+    }    
 }
 
 export interface Cancion {

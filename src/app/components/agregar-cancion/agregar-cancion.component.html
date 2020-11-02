@@ -21,7 +21,7 @@
             <!-- Link de la canción -->
             <div class="form-group">
                 <label>URL:</label>
-                <input type="url" class="form-control" placeholder="http://www.youtube.com/watch?v=xxxxxxxxxx" formControlName="url">
+                <input type="url" class="form-control" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxx" formControlName="url">
             </div>
 
             <!-- Emoción de la canción -->
@@ -35,7 +35,7 @@
                             - Seleccionar -
                         </option>
 
-                        <option *ngFor="let emocionGeneral of emociones">
+                        <option [value]="i" *ngFor="let emocionGeneral of emociones; index as i">
                             {{ emocionGeneral.nombre }}
                         </option>
                     </select>
@@ -49,7 +49,7 @@
                             - Seleccionar -
                         </option>
 
-                        <option *ngFor="let emocionEspecifica of emocionSeleccionada.emociones">
+                        <option [value]="j" *ngFor="let emocionEspecifica of emocionSeleccionada.emociones; index as j">
                             {{ emocionEspecifica.nombre }}
                         </option>
                     </select>
@@ -64,7 +64,7 @@
                         - Seleccionar -
                     </option>
 
-                    <option *ngFor="let lugar of lugares">
+                    <option [value]="k" *ngFor="let lugar of lugares; index as k">
                         {{ lugar.nombre }}
                     </option>
                 </select>

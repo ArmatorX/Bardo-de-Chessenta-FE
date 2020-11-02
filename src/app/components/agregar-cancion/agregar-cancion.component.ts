@@ -1,3 +1,4 @@
+import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
@@ -63,16 +64,22 @@ export class AgregarCancionComponent implements OnInit {
     }
 
     // EVENTOS PROPIOS
-    onCambioSeleccionEmocionGeneral(nombreEmocion : string) {
+    onCambioSeleccionEmocionGeneral(emocionSeleccionada : any) {
         this.frmEmocion.controls['emocionEspecifica'].enable();
         
-        this.emocionSeleccionada = this.encontrarEmocionGeneralPorNombre(nombreEmocion);
+        this.emocionSeleccionada = this.emociones[emocionSeleccionada];
 
         this.frmEmocion.controls['emocionEspecifica'].setValue('');
     }
 
     onSubmit(datosNuevaCancion : any) {
+        let nuevaCancion : Cancion;
 
+        nuevaCancion = this.crearCancionDesdeFormulario(datosNuevaCancion);
+
+        this.servicio.guardarCancion(nuevaCancion).subscribe(respuesta => {
+            this.frmAgregarCancion.reset();
+        });
     }
 
     getEmociones() : Observable<any> {
@@ -83,11 +90,40 @@ export class AgregarCancionComponent implements OnInit {
         return this.servicioLugares.getLugares();
     }
 
-    encontrarEmocionGeneralPorNombre(nombreEmocion: string): EmocionGeneral {
-        let emocion : EmocionGeneral;
+    // encontrarEmocionGeneralPorNombre(nombreEmocion: string): EmocionGeneral {
+    //     let emocion : EmocionGeneral;
 
-        emocion = this.emociones.filter(e => e.nombre == nombreEmocion)[0];
+    //     emocion = this.emociones.filter(e => e.nombre == nombreEmocion)[0];
 
-        return emocion;
+    //     return emocion;
+    // }
+
+    // encontrarEmocionEspecificaPorNombre(nombreEmocion : string) : EmocionEspecifica {
+    //     let emocion : EmocionEspecifica;
+
+    //     emocion = this.emociones.filter(e => e.nombre == nombreEmocion)[0];
+
+    //     return emocion;
+    // }
+
+    // encontrarLugarPorNombre(nombreLugar : string) : Lugar {
+    //     let lugar : Lugar;
+
+    //     lugar = this.lugares.filter(l => l.nombre == nombreLugar)[0];
+
+    //     return lugar;
+    // }
+
+    crearCancionDesdeFormulario(datosCancion : any) : Cancion {
+        let cancion : Cancion = {
+            nombre : datosCancion.nombre,
+            link : datosCancion.url,
+            origen : datosCancion.origen,
+            emocion : this.emocionSeleccionada.emociones[datosCancion.emocion.emocionEspecifica],
+            lugar : this.lugares[datosCancion.lugar],
+            extras : datosCancion.extra
+        };
+
+        return cancion;
     }
 }
