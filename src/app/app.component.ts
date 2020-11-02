@@ -10,30 +10,14 @@ import { Cancion, CancionService } from './services/cancion.service';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-    canciones : Cancion[] = [];
-    title = 'Bardo de Chessenta';
 
-    constructor (private servicio : CancionService, private router : Router, private route: ActivatedRoute) { }
+    title = "Bardo de Chessenta";
+    
+    constructor () { }
 
-    ngOnInit(): void { 
-        this.getCanciones(0);
-    }
+    ngOnInit() { }
 
     ngAfterViewChecked() {
         Feather.replace();
-    }
-
-    getCanciones(nroPagina : number) {
-        let params = new HttpParams();
-
-        params = params.append('page', nroPagina.toString());
-        
-        this.servicio.get(params).subscribe(respuesta => {
-            this.canciones = respuesta.content;
-        });
-    }
-
-    reproducir(cancionId : number) {
-        this.servicio.reproducir(cancionId).subscribe();
     }
 }

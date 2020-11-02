@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UrlService } from './api/url.service';
-import { EmocionEspecifica } from './emocion-especifica.service';
+import { EmocionEspecifica } from './emocion.service';
 import { Lugar } from './lugar.service';
 
 @Injectable({
@@ -13,8 +13,12 @@ export class CancionService {
 
     constructor(private _http : HttpClient, private _url : UrlService) { }
 
-    get(params? : HttpParams) : Observable<any> {
+    getCanciones(params? : HttpParams) : Observable<any> {
         return this._http.get<Cancion[]>(this._url.getUrlBaseCancion(), {params : params});
+    }
+
+    guardarCancion(cancion : Cancion) : Observable<any> {
+        return this._http.post<Cancion[]>(this._url.getUrlBaseCancion(), {params : null})
     }
 
     reproducir(cancionId : number) : any {
