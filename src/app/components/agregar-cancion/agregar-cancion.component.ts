@@ -23,6 +23,9 @@ export class AgregarCancionComponent implements OnInit {
     // Form groups
     frmAgregarCancion : FormGroup;
     frmEmocion : FormGroup;
+
+    // Controles formulario
+    registroCorrecto = false;
     
     constructor(
         private servicio : CancionService,
@@ -33,20 +36,20 @@ export class AgregarCancionComponent implements OnInit {
         private formBuilder : FormBuilder) {
             // Form group emocion
             this.frmEmocion = this.formBuilder.group({
-                emocionGeneral : new FormControl('-1', Validators.required),
+                emocionGeneral : new FormControl('-1', Validators.min(0)),
                 emocionEspecifica : new FormControl({
                     value : '-1',
                     disabled : true
-                }, Validators.required)
+                }, Validators.min(0))
             });
 
             // Main form group
             this.frmAgregarCancion = this.formBuilder.group({
                 nombre : new FormControl('', Validators.required),
                 origen : new FormControl('', Validators.required),
-                url : new FormControl('', [Validators.required, Validators.pattern('((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?(\/[a-zA-Z0-9\?\=]*)?')]),
+                url : new FormControl('', [Validators.required, Validators.pattern('((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?(\/[a-zA-Z0-9\?\=\-]*)?')]),
                 emocion : this.frmEmocion,
-                lugar : new FormControl('-1', Validators.required),
+                lugar : new FormControl('-1', Validators.min(0)),
                 extra : new FormControl('')
             });
         }
@@ -78,7 +81,11 @@ export class AgregarCancionComponent implements OnInit {
         nuevaCancion = this.crearCancionDesdeFormulario(datosNuevaCancion);
 
         this.servicio.guardarCancion(nuevaCancion).subscribe(respuesta => {
-            this.limpiarFormulario();
+            if (respuesta.id != null) {
+                this.registroCorrecto = true;
+
+                this.limpiarFormulario();
+            }
         });
     }
 
