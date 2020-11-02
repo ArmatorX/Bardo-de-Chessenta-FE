@@ -31,7 +31,7 @@
                     <label>Emoción general:</label>
 
                     <select class="form-control" formControlName="emocionGeneral" (change)="onCambioSeleccionEmocionGeneral($event.target.value)">
-                        <option hidden disabled selected value>
+                        <option hidden disabled selected [value]="-1">
                             - Seleccionar -
                         </option>
 
@@ -45,7 +45,7 @@
                 <div class="form-group col">
                     <label>Emoción específica:</label>
                     <select class="form-control" formControlName="emocionEspecifica">
-                        <option hidden disabled selected value>
+                        <option hidden disabled selected [value]="-1">
                             - Seleccionar -
                         </option>
 
@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label>Lugar:</label>
                 <select class="form-control" formControlName="lugar">
-                    <option hidden disabled selected value>
+                    <option hidden disabled selected [value]="-1">
                         - Seleccionar -
                     </option>
 
@@ -76,6 +76,7 @@
                 <input type="text" class="form-control" placeholder="Temardo para el final boss" formControlName="extra">
             </div>
             
+            <button type="button" class="btn mr-2 btn-danger" (click)="limpiarFormulario()">Limpiar formulario</button>
             <button type="submit" class="btn btn-primary" [disabled]="!frmAgregarCancion.valid">Agregar canción</button>
         </form>
     </div>

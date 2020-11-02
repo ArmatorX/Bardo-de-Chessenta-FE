@@ -33,9 +33,9 @@ export class AgregarCancionComponent implements OnInit {
         private formBuilder : FormBuilder) {
             // Form group emocion
             this.frmEmocion = this.formBuilder.group({
-                emocionGeneral : new FormControl('', Validators.required),
+                emocionGeneral : new FormControl('-1', Validators.required),
                 emocionEspecifica : new FormControl({
-                    value : '',
+                    value : '-1',
                     disabled : true
                 }, Validators.required)
             });
@@ -46,7 +46,7 @@ export class AgregarCancionComponent implements OnInit {
                 origen : new FormControl('', Validators.required),
                 url : new FormControl('', [Validators.required, Validators.pattern('((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?(\/[a-zA-Z0-9\?\=]*)?')]),
                 emocion : this.frmEmocion,
-                lugar : new FormControl('', Validators.required),
+                lugar : new FormControl('-1', Validators.required),
                 extra : new FormControl('')
             });
         }
@@ -69,7 +69,7 @@ export class AgregarCancionComponent implements OnInit {
         
         this.emocionSeleccionada = this.emociones[emocionSeleccionada];
 
-        this.frmEmocion.controls['emocionEspecifica'].setValue('');
+        this.frmEmocion.controls['emocionEspecifica'].reset('-1');
     }
 
     onSubmit(datosNuevaCancion : any) {
@@ -78,7 +78,7 @@ export class AgregarCancionComponent implements OnInit {
         nuevaCancion = this.crearCancionDesdeFormulario(datosNuevaCancion);
 
         this.servicio.guardarCancion(nuevaCancion).subscribe(respuesta => {
-            this.frmAgregarCancion.reset();
+            this.limpiarFormulario();
         });
     }
 
@@ -88,6 +88,17 @@ export class AgregarCancionComponent implements OnInit {
 
     getLugares() : Observable<any> {
         return this.servicioLugares.getLugares();
+    }
+
+    limpiarFormulario() {
+        this.frmAgregarCancion.reset();
+            
+        this.frmEmocion.controls['emocionEspecifica'].reset({
+            value : '-1',
+            disabled : true
+        });
+        this.frmEmocion.controls['emocionGeneral'].reset('-1');
+        this.frmAgregarCancion.controls['lugar'].reset('-1');
     }
 
     // encontrarEmocionGeneralPorNombre(nombreEmocion: string): EmocionGeneral {
