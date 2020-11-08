@@ -1,9 +1,34 @@
     <!-- Barra de búsqueda -->
     <div class="row mt-2 mb-2">
-        <form id="form-buscar" class="form-inline d-flex justify-content-center">
-            <div class="p-2 form-group align-self-center">
+        <form id="form-buscar" class="form-inline d-flex justify-content-center" (ngSubmit)="onSubmit()">
+            <div id="txt-buscar-group" class="p-2 form-group align-self-center">
                 <label class="sr-only">Buscar canciones:</label>
-                <input id="txt-buscar" type="search" class="form-control" placeholder="Buscar por nombre, origen o extras.">
+
+                <input id="txt-buscar" type="search" class="form-control" placeholder="Buscar por nombre, origen o extras." [(ngModel)]="txtBuscar" name="txtBuscar">
+            </div>
+
+            <div id="cmb-emociones-group" class="p-2 form-group align-self-center">
+                <label class="sr-only">Emociones:</label>
+
+                <select id="cmb-emocion-general" class="form-control ml-2" (change)="onCambioSeleccionEmocionGeneral($event.target.value)">
+                    <option selected value>
+                        - Emoción general -
+                    </option>
+
+                    <option [value]="i" *ngFor="let emocionGeneral of emociones; index as i">
+                        {{ emocionGeneral.nombre }}
+                    </option>
+                </select>
+
+                <select id="cmb-emocion-especifica" #cmbEmocionEspecifica class="form-control ml-2" [disabled]="!hayEmocionSeleccionada">
+                    <option selected value>
+                        - Emoción específica -
+                    </option>
+
+                    <option *ngFor="let emocionEspecifica of getEmocionSeleccionada().emociones">
+                        {{ emocionEspecifica.nombre }}
+                    </option>
+                </select>
             </div>
 
             <div class="p-2 align-self-center">

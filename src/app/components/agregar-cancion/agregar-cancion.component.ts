@@ -57,12 +57,12 @@ export class AgregarCancionComponent implements OnInit {
     // EVENTOS
     // EVENTOS ANGULAR
     ngOnInit() {
-        this.getEmociones().subscribe(respuesta => {
-            this.emociones = respuesta.content;
+        this.servicioEmociones.getEmociones().subscribe(respuesta => {
+            this.emociones = respuesta;
         });
 
-        this.getLugares().subscribe(respuesta => {
-            this.lugares = respuesta.content;
+        this.servicioLugares.getLugares().subscribe(respuesta => {
+            this.lugares = respuesta;
         });
     }
 
@@ -87,14 +87,6 @@ export class AgregarCancionComponent implements OnInit {
                 this.limpiarFormulario();
             }
         });
-    }
-
-    getEmociones() : Observable<any> {
-        return this.servicioEmociones.getEmociones();
-    }
-
-    getLugares() : Observable<any> {
-        return this.servicioLugares.getLugares();
     }
 
     limpiarFormulario() {

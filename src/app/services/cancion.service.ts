@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UrlService } from './api/url.service';
-import { EmocionEspecifica } from './emocion.service';
+import { EmocionEspecifica, EmocionGeneral } from './emocion.service';
 import { Lugar } from './lugar.service';
 
 @Injectable({
@@ -13,7 +13,11 @@ export class CancionService {
 
     constructor(private _http : HttpClient, private _url : UrlService) { }
 
-    getCanciones(params? : HttpParams) : Observable<any> {
+    getCanciones(nroPagina : number) : Observable<any> {
+        let params = new HttpParams();
+
+        params = params.append('page', nroPagina.toString());
+        
         return this._http.get<Cancion[]>(this._url.getUrlBaseCancion(), {params : params});
     }
 
@@ -23,7 +27,24 @@ export class CancionService {
     
     guardarCancion(cancion : Cancion) : Observable<any> {
         return this._http.post<Cancion[]>(this._url.getUrlBaseCancion(), cancion);
-    }    
+    }
+
+    buscarCancionSimple(txtBuscar? : string, emocionGeneral? : EmocionGeneral, emocionEspecifica? : EmocionEspecifica) : Observable<any> {
+        let params = new HttpParams();
+        if (txtBuscar != null) {
+            params = params.append('busqueda', txtBuscar);
+        }
+
+        if (emocionEspecifica != null) {
+            params = params.append('emocionEspecifica', emocionEspecifica.id.toString());
+        } else {
+            if (emocionGeneral != null) {
+                params = params.append('emocionGeneral', emocionGeneral.id.toString());
+            }
+        }
+
+        return this._http.get<Cancion[]>(this._url.getUrlBaseCancion(), {params : params});
+    }
 }
 
 export interface Cancion {
