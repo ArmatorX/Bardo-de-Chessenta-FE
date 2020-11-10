@@ -28,6 +28,19 @@ export class BuscarCancionComponent implements OnInit {
     @ViewChild('cmbEmocionEspecifica') cmbEmocionEspecifica: ElementRef;
     txtBuscar : string;
 
+    // Mensajes de borrado
+    mostrarErrorBorrar : boolean;;
+    mostrarSuccessBorrar : boolean;
+
+    // Paginación
+    esPrimeraPagina : boolean;
+    esUltimaPagina : boolean;
+    paginaActual : number;
+    cantidadPaginas : number;
+
+    // Controles del bot
+    activarBotonReproducir : boolean = false;
+
     constructor (
         private servicio : CancionService,
         private servicioEmociones : EmocionService,
@@ -38,9 +51,7 @@ export class BuscarCancionComponent implements OnInit {
     // EVENTOS
     // EVENTOS DE ANGULAR
     ngOnInit(): void { 
-        this.servicio.getCanciones(0).subscribe(respuesta => {
-            this.canciones = respuesta.content;
-        });
+        this.irPrimeraPagina();
 
         this.servicioEmociones.getEmociones().subscribe(respuesta => {
             this.emociones = respuesta;
@@ -66,7 +77,7 @@ export class BuscarCancionComponent implements OnInit {
         }
     }
 
-    onSubmit() {
+    onSubmit() : void {
         let emocionEspecificaIndice= this.cmbEmocionEspecifica.nativeElement.selectedIndex;;
         let emocionGeneralSeleccionada = this.emocionSeleccionada;
         let emocionEspecificaSeleccionada;
@@ -76,9 +87,9 @@ export class BuscarCancionComponent implements OnInit {
             emocionEspecificaSeleccionada = this.emocionSeleccionada.emociones[emocionEspecificaIndice - 1];
         }
 
-        console.log(this.txtBuscar);
-        console.log(emocionGeneralSeleccionada);
-        console.log(emocionEspecificaSeleccionada);
+        // console.log(this.txtBuscar);
+        // console.log(emocionGeneralSeleccionada);
+        // console.log(emocionEspecificaSeleccionada);
 
         this.servicio.buscarCancionSimple(this.txtBuscar,
             emocionGeneralSeleccionada,
@@ -86,11 +97,13 @@ export class BuscarCancionComponent implements OnInit {
             
             .subscribe(respuesta => {
                 this.canciones = respuesta.content;
-            });
+            }); 
+
+        this.reiniciarMensajes();
     }
 
-    reproducir(cancionId : number) {
-        this.servicio.reproducir(cancionId).subscribe();
+    reproducir(cancion : Cancion) : void {
+        this.servicio.reproducir(cancion).subscribe();
     }
 
     getEmocionSeleccionada() : EmocionGeneral {
@@ -99,5 +112,72 @@ export class BuscarCancionComponent implements OnInit {
         }
 
         return this.emocionSeleccionada;
+    }
+
+    borrarCancion(cancion : Cancion) : void {
+        let txtAlerta = `¿Está seguro que desea eliminar la canción ${cancion.nombre}?`;
+
+        this.mostrarErrorBorrar = false;
+        this.mostrarSuccessBorrar = false;
+
+        if (confirm(txtAlerta)) {
+            this.servicio.borrarCancion(cancion).subscribe(
+                () => { },
+                error => {
+                    this.mostrarErrorBorrar = true;
+                    console.error(error);
+                },
+                () => {
+                    this.getCanciones();
+                    this.mostrarSuccessBorrar = true;
+                }
+            );
+        }
+    }
+
+    // PAGINACIÓN
+    irPrimeraPagina() : void {
+        this.paginaActual = 1;
+        this.getCanciones();
+    }
+    
+    irUltimaPagina() : void {
+        this.paginaActual = this.cantidadPaginas;
+        this.getCanciones();
+    }
+
+    irPaginaSiguiente() : void {
+        this.paginaActual ++;
+        this.getCanciones();
+    }
+
+    irPaginaAnterior() : void {
+        this.paginaActual --;
+        this.getCanciones();
+    }
+
+    irAPagina(nroPagina : number) : void {
+        this.paginaActual = nroPagina;
+        this.getCanciones();
+    }
+
+    getCanciones() : void {
+        this.servicio.getCanciones(this.paginaActual - 1).subscribe(respuesta => {
+            this.canciones = respuesta.content;
+
+            // Paginación
+            this.esPrimeraPagina = respuesta.first;
+            this.esUltimaPagina = respuesta.last;
+            this.paginaActual = respuesta.number + 1;
+            this.cantidadPaginas = respuesta.totalPages;
+        });
+
+        // Reiniciar mensajes
+        this.reiniciarMensajes();
+    }
+
+    reiniciarMensajes() : void {
+        this.mostrarErrorBorrar = false;
+        this.mostrarSuccessBorrar = false;
     }
 }

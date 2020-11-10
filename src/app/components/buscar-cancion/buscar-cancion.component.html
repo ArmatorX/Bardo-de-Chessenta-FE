@@ -39,6 +39,22 @@
         </form>
     </div>
 
+    <div class="row">
+        <div class="col"></div>
+        <div class="col alert alert-danger col-10"  role="alert" *ngIf="mostrarErrorBorrar">
+            Parece que ocurrió un error al borrar la canción.
+        </div>
+        <div class="col"></div>
+    </div>
+
+    <div class="row">
+        <div class="col"></div>
+        <div class="col alert alert-success col-10"  role="alert" *ngIf="mostrarSuccessBorrar">
+            La canción se eliminó correctamente.
+        </div>
+        <div class="col"></div>
+    </div>
+
     <!-- Resultados de búsqueda -->
     <div class="row">
         <div class="col">
@@ -68,11 +84,11 @@
                             <td><p>cancion.lugar</p></td>
                             <td><p>cancion.partida</p></td>  -->
                             <td id="botones">
-                                <button (click)="reproducir(cancion.id)" class="btn btn-primary btn-sm m-1">
+                                <button (click)="reproducir(cancion.id)" class="btn btn-primary btn-sm m-1" data-toggle="tooltip" data-placement="top" title="Tooltip on top" [disabled]="!activarBotonReproducir">
                                     <span data-feather="play"></span>
                                 </button>
 
-                                <button class="btn btn-primary btn-sm m-1">
+                                <button class="btn btn-primary btn-sm m-1" disabled>
                                     <span data-feather="plus"></span>
                                 </button>
 
@@ -80,7 +96,7 @@
                                     <span data-feather="edit"></span>
                                 </button>
 
-                                <button class="btn btn-primary btn-sm m-1">
+                                <button class="btn btn-primary btn-sm m-1" (click)="borrarCancion(cancion)">
                                     <span data-feather="trash-2"></span>
                                 </button>
                             </td>
@@ -89,4 +105,27 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <!-- Paginación -->
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esPrimeraPagina">
+                <span data-feather="chevrons-left"></span>
+            </button>
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esPrimeraPagina">
+                <span data-feather="chevron-left"></span>
+            </button>
+
+            {{ paginaActual }} / {{ cantidadPaginas }}
+
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esUltimaPagina">
+                <span data-feather="chevron-right"></span>
+            </button>
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esUltimaPagina">
+                <span data-feather="chevrons-right"></span>
+            </button>
+        </div>
+        <div class="col"></div>
     </div>

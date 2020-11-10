@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as Feather from 'feather-icons';
 import { Cancion, CancionService } from './services/cancion.service';
+import * as $ from 'jquery';
+import 'bootstrap';
 
 @Component({
     selector: 'app-root',
@@ -18,6 +20,7 @@ export class AppComponent implements OnInit {
     ngOnInit() { }
 
     ngAfterViewChecked() {
+        (<any> $('[data-toggle="tooltip"]')).tooltip();
         Feather.replace();
     }
 }

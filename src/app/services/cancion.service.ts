@@ -17,16 +17,21 @@ export class CancionService {
         let params = new HttpParams();
 
         params = params.append('page', nroPagina.toString());
+        params = params.append('size', '10');
         
         return this._http.get<Cancion[]>(this._url.getUrlBaseCancion(), {params : params});
     }
 
-    reproducir(cancionId : number) : any {
-        return this._http.get<any>(this._url.getUrlBaseReproductor() + cancionId.toString());
+    reproducir(cancion : Cancion) : any {
+        return this._http.get<any>(this._url.getUrlBaseReproductor() + cancion.id.toString());
     }
     
     guardarCancion(cancion : Cancion) : Observable<any> {
         return this._http.post<Cancion[]>(this._url.getUrlBaseCancion(), cancion);
+    }
+
+    borrarCancion(cancion : Cancion) : Observable<any> {
+        return this._http.delete(this._url.getUrlBaseCancion() + cancion.id.toString())
     }
 
     buscarCancionSimple(txtBuscar? : string, emocionGeneral? : EmocionGeneral, emocionEspecifica? : EmocionEspecifica) : Observable<any> {
