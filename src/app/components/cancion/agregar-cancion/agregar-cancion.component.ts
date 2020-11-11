@@ -21,7 +21,7 @@ export class AgregarCancionComponent implements OnInit {
     lugares : Lugar[] = [];
 
     // Form groups
-    frmAgregarCancion : FormGroup;
+    frmCancion : FormGroup;
     frmEmocion : FormGroup;
 
     // Controles formulario
@@ -44,7 +44,7 @@ export class AgregarCancionComponent implements OnInit {
             });
 
             // Main form group
-            this.frmAgregarCancion = this.formBuilder.group({
+            this.frmCancion = this.formBuilder.group({
                 nombre : new FormControl('', Validators.required),
                 origen : new FormControl('', Validators.required),
                 url : new FormControl('', [Validators.required, Validators.pattern('((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?(\/[a-zA-Z0-9\?\=\-]*)?')]),
@@ -90,14 +90,14 @@ export class AgregarCancionComponent implements OnInit {
     }
 
     limpiarFormulario() {
-        this.frmAgregarCancion.reset();
+        this.frmCancion.reset();
             
         this.frmEmocion.controls['emocionEspecifica'].reset({
             value : '-1',
             disabled : true
         });
         this.frmEmocion.controls['emocionGeneral'].reset('-1');
-        this.frmAgregarCancion.controls['lugar'].reset('-1');
+        this.frmCancion.controls['lugar'].reset('-1');
     }
 
     // encontrarEmocionGeneralPorNombre(nombreEmocion: string): EmocionGeneral {
