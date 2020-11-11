@@ -20,12 +20,12 @@
                     </option>
                 </select>
 
-                <select id="cmb-emocion-especifica" #cmbEmocionEspecifica class="form-control ml-2" [disabled]="!hayEmocionSeleccionada">
+                <select id="cmb-emocion-especifica" #cmbEmocionEspecifica class="form-control ml-2" [disabled]="!hayEmocionGeneralSeleccionada">
                     <option selected value>
                         - Emoción específica -
                     </option>
 
-                    <option *ngFor="let emocionEspecifica of getEmocionSeleccionada().emociones">
+                    <option *ngFor="let emocionEspecifica of getEmocionGeneralSeleccionada().emociones">
                         {{ emocionEspecifica.nombre }}
                     </option>
                 </select>
@@ -62,12 +62,12 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Nombre</th>
-                            <th>Extra</th>
-                            <th>Emoción Específica</th>
-                            <th>Lugar</th>
-                            <th>Partida</th>
-                            <th></th>
+                            <th class="col-3">Nombre</th>
+                            <th class="col-3">Extra</th>
+                            <th class="col-1">Emoción</th>
+                            <th class="col-1">Lugar</th>
+                            <th class="col-2">Partida</th>
+                            <th class="col-2"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,7 +84,7 @@
                             <td><p>cancion.lugar</p></td>
                             <td><p>cancion.partida</p></td>  -->
                             <td id="botones">
-                                <button (click)="reproducir(cancion.id)" class="btn btn-primary btn-sm m-1" data-toggle="tooltip" data-placement="top" title="Tooltip on top" [disabled]="!activarBotonReproducir">
+                                <button (click)="reproducir(cancion)" class="btn btn-primary btn-sm m-1" data-toggle="tooltip" data-placement="top" title="{{ tooltipBotNoConectado }}" [disabled]="!activarBotonReproducir">
                                     <span data-feather="play"></span>
                                 </button>
 
@@ -110,20 +110,20 @@
     <!-- Paginación -->
     <div class="row">
         <div class="col"></div>
-        <div class="col">
-            <button class="btn btn-primary btn-sm m-1" [disabled]="esPrimeraPagina">
+        <div id="pag-control" class="col">
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esPrimeraPagina" (click)="irPrimeraPagina()">
                 <span data-feather="chevrons-left"></span>
             </button>
-            <button class="btn btn-primary btn-sm m-1" [disabled]="esPrimeraPagina">
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esPrimeraPagina" (click)="irPaginaAnterior()">
                 <span data-feather="chevron-left"></span>
             </button>
 
             {{ paginaActual }} / {{ cantidadPaginas }}
 
-            <button class="btn btn-primary btn-sm m-1" [disabled]="esUltimaPagina">
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esUltimaPagina" (click)="irPaginaSiguiente()">
                 <span data-feather="chevron-right"></span>
             </button>
-            <button class="btn btn-primary btn-sm m-1" [disabled]="esUltimaPagina">
+            <button class="btn btn-primary btn-sm m-1" [disabled]="esUltimaPagina" (click)="irUltimaPagina()">
                 <span data-feather="chevrons-right"></span>
             </button>
         </div>

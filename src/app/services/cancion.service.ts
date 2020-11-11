@@ -34,21 +34,27 @@ export class CancionService {
         return this._http.delete(this._url.getUrlBaseCancion() + cancion.id.toString())
     }
 
-    buscarCancionSimple(txtBuscar? : string, emocionGeneral? : EmocionGeneral, emocionEspecifica? : EmocionEspecifica) : Observable<any> {
+    buscarCancionSimple(nroPagina : number, txtBuscar? : string, emocionGeneral? : EmocionGeneral, emocionEspecifica? : EmocionEspecifica) : Observable<any> {
         let params = new HttpParams();
+
+        params = params.append('page', nroPagina.toString());
+        params = params.append('size', '10');
+
         if (txtBuscar != null) {
             params = params.append('busqueda', txtBuscar);
         }
 
         if (emocionEspecifica != null) {
             params = params.append('emocionEspecifica', emocionEspecifica.id.toString());
-        } else {
-            if (emocionGeneral != null) {
-                params = params.append('emocionGeneral', emocionGeneral.id.toString());
-            }
+        } else if (emocionGeneral != null) {
+            params = params.append('emocionGeneral', emocionGeneral.id.toString());
         }
 
         return this._http.get<Cancion[]>(this._url.getUrlBaseCancion(), {params : params});
+    }
+
+    verificarConexionBot() : Observable<boolean> {
+        return this._http.get<boolean>(this._url.getUrlBaseCancion() + "estado-bot/")
     }
 }
 

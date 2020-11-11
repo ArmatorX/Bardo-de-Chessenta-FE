@@ -16,17 +16,12 @@ export class BuscarCancionComponent implements OnInit {
     canciones : Cancion[] = [];
     emociones : EmocionGeneral[] = [];
     lugares : Lugar[] = [];
-
-    hayEmocionSeleccionada : boolean = false;
-    emocionSeleccionada : EmocionGeneral;
     
     private emocionGeneralDefault: EmocionGeneral = {
         nombre: "",
         emociones: []
     };
 
-    @ViewChild('cmbEmocionEspecifica') cmbEmocionEspecifica: ElementRef;
-    txtBuscar : string;
 
     // Mensajes de borrado
     mostrarErrorBorrar : boolean;;
@@ -39,7 +34,17 @@ export class BuscarCancionComponent implements OnInit {
     cantidadPaginas : number;
 
     // Controles del bot
-    activarBotonReproducir : boolean = false;
+    activarBotonReproducir : boolean = true;
+    tooltipBotNoConectado : string;
+
+    // Parámetros de búsqueda
+    seRealizoBusqueda : boolean = false;
+    txtBuscar : string;
+
+    hayEmocionGeneralSeleccionada : boolean = false;
+    emocionGeneralSeleccionada : EmocionGeneral;
+    @ViewChild('cmbEmocionEspecifica') cmbEmocionEspecifica: ElementRef;
+    emocionEspecificaSeleccionada : EmocionEspecifica;
 
     constructor (
         private servicio : CancionService,
@@ -51,6 +56,16 @@ export class BuscarCancionComponent implements OnInit {
     // EVENTOS
     // EVENTOS DE ANGULAR
     ngOnInit(): void { 
+        this.servicio.verificarConexionBot().subscribe(respuesta => {
+            this.activarBotonReproducir = respuesta;
+
+            if (this.activarBotonReproducir) {
+                this.tooltipBotNoConectado = "";
+            } else {
+                this.tooltipBotNoConectado = "El bot no está conectado a ningún canal. Usá el comando '!connect' y recargá la página."
+            }
+        });
+
         this.irPrimeraPagina();
 
         this.servicioEmociones.getEmociones().subscribe(respuesta => {
@@ -63,55 +78,58 @@ export class BuscarCancionComponent implements OnInit {
     }
 
     // EVENTOS PROPIOS
-    onCambioSeleccionEmocionGeneral(emocionSeleccionada : any) {
+    onCambioSeleccionEmocionGeneral(emocionGeneralSeleccionada : any) {
         this.cmbEmocionEspecifica.nativeElement.selectedIndex = 0;
 
-        if (emocionSeleccionada == "") {
-            this.hayEmocionSeleccionada = false;
+        if (emocionGeneralSeleccionada == "") {
+            this.hayEmocionGeneralSeleccionada = false;
 
-            this.emocionSeleccionada = null;
+            this.emocionGeneralSeleccionada = null;
         } else {
-            this.hayEmocionSeleccionada = true;
+            this.hayEmocionGeneralSeleccionada = true;
             
-            this.emocionSeleccionada = this.emociones[emocionSeleccionada];
+            this.emocionGeneralSeleccionada = this.emociones[emocionGeneralSeleccionada];
         }
     }
 
     onSubmit() : void {
-        let emocionEspecificaIndice= this.cmbEmocionEspecifica.nativeElement.selectedIndex;;
-        let emocionGeneralSeleccionada = this.emocionSeleccionada;
-        let emocionEspecificaSeleccionada;
+        let emocionEspecificaIndice = this.cmbEmocionEspecifica.nativeElement.selectedIndex;;
+        
+        let hayTexto : boolean = this.txtBuscar != "" && this.txtBuscar != null;
+        let hayEmocion : boolean;
 
-        if (emocionGeneralSeleccionada != null && emocionEspecificaIndice != 0) {
-            emocionGeneralSeleccionada = null;
-            emocionEspecificaSeleccionada = this.emocionSeleccionada.emociones[emocionEspecificaIndice - 1];
+        let emocionBuscar : any;
+        if (this.emocionGeneralSeleccionada != null) {
+            if(emocionEspecificaIndice != 0) {
+                this.emocionEspecificaSeleccionada = this.emocionGeneralSeleccionada.emociones[emocionEspecificaIndice - 1];
+            } else {
+                this.emocionEspecificaSeleccionada = null;
+            }
+
+            hayEmocion = true;
         }
 
         // console.log(this.txtBuscar);
         // console.log(emocionGeneralSeleccionada);
         // console.log(emocionEspecificaSeleccionada);
 
-        this.servicio.buscarCancionSimple(this.txtBuscar,
-            emocionGeneralSeleccionada,
-            emocionEspecificaSeleccionada)
-            
-            .subscribe(respuesta => {
-                this.canciones = respuesta.content;
-            }); 
+        this.seRealizoBusqueda = hayTexto || hayEmocion;
 
-        this.reiniciarMensajes();
+        this.paginaActual = 0;
+
+        this.actualizarTablaCanciones();
     }
 
     reproducir(cancion : Cancion) : void {
         this.servicio.reproducir(cancion).subscribe();
     }
 
-    getEmocionSeleccionada() : EmocionGeneral {
-        if (this.emocionSeleccionada == null) {
+    getEmocionGeneralSeleccionada() : EmocionGeneral {
+        if (this.emocionGeneralSeleccionada == null) {
             return this.emocionGeneralDefault;
         }
 
-        return this.emocionSeleccionada;
+        return this.emocionGeneralSeleccionada;
     }
 
     borrarCancion(cancion : Cancion) : void {
@@ -138,46 +156,73 @@ export class BuscarCancionComponent implements OnInit {
     // PAGINACIÓN
     irPrimeraPagina() : void {
         this.paginaActual = 1;
-        this.getCanciones();
+        this.actualizarTablaCanciones();
     }
     
     irUltimaPagina() : void {
         this.paginaActual = this.cantidadPaginas;
-        this.getCanciones();
+        this.actualizarTablaCanciones();
     }
 
     irPaginaSiguiente() : void {
         this.paginaActual ++;
-        this.getCanciones();
+        this.actualizarTablaCanciones();
     }
 
     irPaginaAnterior() : void {
         this.paginaActual --;
-        this.getCanciones();
+        this.actualizarTablaCanciones();
     }
 
     irAPagina(nroPagina : number) : void {
         this.paginaActual = nroPagina;
-        this.getCanciones();
+        this.actualizarTablaCanciones();
     }
 
     getCanciones() : void {
         this.servicio.getCanciones(this.paginaActual - 1).subscribe(respuesta => {
-            this.canciones = respuesta.content;
-
-            // Paginación
-            this.esPrimeraPagina = respuesta.first;
-            this.esUltimaPagina = respuesta.last;
-            this.paginaActual = respuesta.number + 1;
-            this.cantidadPaginas = respuesta.totalPages;
+            this.actualizarCanciones(respuesta);
         });
 
         // Reiniciar mensajes
         this.reiniciarMensajes();
     }
 
+    actualizarCanciones(respuesta : any) : void {
+        this.canciones = respuesta.content;
+
+        // Paginación
+        this.esPrimeraPagina = respuesta.first;
+        this.esUltimaPagina = respuesta.last;
+        this.paginaActual = respuesta.number + 1;
+        this.cantidadPaginas = respuesta.totalPages;
+    }
+
     reiniciarMensajes() : void {
         this.mostrarErrorBorrar = false;
         this.mostrarSuccessBorrar = false;
+    }
+
+    buscarSimple(txtBuscar : string, emocionGeneral : EmocionGeneral, emocionEspecifica : EmocionEspecifica) {
+        this.servicio.buscarCancionSimple(this.paginaActual - 1,
+            txtBuscar,
+            emocionGeneral,
+            emocionEspecifica)
+            
+            .subscribe(respuesta => {
+                this.actualizarCanciones(respuesta);
+            }); 
+
+        this.reiniciarMensajes();
+    }
+
+    actualizarTablaCanciones() {
+        if (this.seRealizoBusqueda)  {
+            this.buscarSimple(this.txtBuscar, 
+                this.emocionGeneralSeleccionada,
+                this.emocionEspecificaSeleccionada);
+        } else {
+            this.getCanciones();
+        }
     }
 }

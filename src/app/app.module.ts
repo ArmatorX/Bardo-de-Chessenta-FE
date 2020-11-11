@@ -12,6 +12,7 @@ import { AgregarCancionComponent } from './components/agregar-cancion/agregar-ca
 import { BuscarCancionComponent } from './components/buscar-cancion/buscar-cancion.component';
 import { EmocionService } from './services/emocion.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EditarCancionComponent } from './components/editar-cancion/editar-cancion.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NavbarComponent,
     MenuComponent,
     AgregarCancionComponent,
-    BuscarCancionComponent
+    BuscarCancionComponent,
+    EditarCancionComponent
   ],
   imports: [
     BrowserModule,
