@@ -14,6 +14,7 @@ import { EmocionService } from './services/emocion.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditarCancionComponent } from './components/cancion/editar-cancion/editar-cancion.component';
 import { FormularioCancionComponent } from './components/cancion/formulario-cancion/formulario-cancion.component';
+import { ConsultarCancionComponent } from './components/cancion/consultar-cancion/consultar-cancion.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FormularioCancionComponent } from './components/cancion/formulario-canc
     AgregarCancionComponent,
     BuscarCancionComponent,
     EditarCancionComponent,
-    FormularioCancionComponent
+    FormularioCancionComponent,
+    ConsultarCancionComponent
   ],
   imports: [
     BrowserModule,

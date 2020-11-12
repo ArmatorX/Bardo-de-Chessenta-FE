@@ -1,5 +1,5 @@
 <!-- Formulario CRUD Canción -->
-<form [formGroup]="frmCancion" (ngSubmit)="onSubmit(frmCancion.value)">
+<form [formGroup]="frmCancion" (ngSubmit)="onSubmit(frmCancion.value)" *ngIf="frmCancion != null">
     <!-- Id de la canción -->
     <div class="mt-3 form-group" *ngIf="modo > 0">
         <label>Id:</label>
@@ -76,18 +76,27 @@
         <input type="text" class="form-control" placeholder="Temardo para el final boss" formControlName="extra">
     </div>
     
+    <!-- Botones -->
+    <button type="button" class="btn mr-2 btn-danger" (click)="onCancelar()" *ngIf="modo != 2">
+        <span data-feather="x-square"></span>
+        Cancelar
+    </button>
+
     <button type="button" class="btn mr-2 btn-danger" (click)="limpiarFormulario()" *ngIf="modo != 2">
         <span data-feather="trash"></span>
         Limpiar formulario
     </button>
+
     <button type="submit" class="btn btn-primary" [disabled]="!frmCancion.valid" *ngIf="modo == 0">
         <span data-feather="file-plus"></span>
         Agregar canción
     </button>
-    <button type="submit" class="btn btn-primary" [disabled]="!frmCancion.valid" *ngIf="modo == 1">
+    
+    <button type="submit" class="btn btn-primary" [disabled]="frmCancion.pristine || !frmCancion.valid" *ngIf="modo == 1">
         <span data-feather="edit"></span>
         Confirmar edición
     </button>
+    
     <button type="button" class="btn btn-primary" *ngIf="modo == 2">
         <span data-feather="edit"></span>
         Editar canción

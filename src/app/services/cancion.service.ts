@@ -26,16 +26,28 @@ export class CancionService {
         return this._http.get<any>(this._url.getUrlBaseReproductor() + cancion.id.toString());
     }
     
-    guardarCancion(cancion : Cancion) : Observable<any> {
-        return this._http.post<Cancion[]>(this._url.getUrlBaseCancion(), cancion);
+    guardarCancion(cancion : Cancion) : Observable<Cancion> {
+        return this._http.post<Cancion>(this._url.getUrlBaseCancion(), cancion);
+    }
+
+    actualizarCancion(cancion : Cancion) : Observable<Cancion> {
+        if (cancion.id == null) {
+            throw new Error("La canción no tiene id.");
+        }
+
+        return this._http.put<Cancion>(this._url.getUrlBaseCancion(), cancion);
     }
 
     borrarCancion(cancion : Cancion) : Observable<any> {
         return this._http.delete(this._url.getUrlBaseCancion() + cancion.id.toString())
     }
 
-    getCancionById(id : number) : Observable<Cancion> {
-        return this._http.get<Cancion>(this._url.getUrlBaseCancion() + id.toString());
+    buscarPorId(id : number) : Observable<Cancion> {
+        let params = new HttpParams();
+
+        params = params.append('id', id.toString());
+        
+        return this._http.get<Cancion>(this._url.getUrlBaseCancion(), { params : params });
     }
 
     buscarCancionSimple(nroPagina : number, txtBuscar? : string, emocionGeneral? : EmocionGeneral, emocionEspecifica? : EmocionEspecifica) : Observable<any> {

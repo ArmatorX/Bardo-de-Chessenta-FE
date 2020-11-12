@@ -1,5 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { Cancion, CancionService, CANCION_VACIA } from 'src/app/services/cancion.service';
 import { EmocionEspecifica, EmocionGeneral, EmocionService, EMOCION_GENERAL_VACIA } from 'src/app/services/emocion.service';
 import { Lugar, LugarService } from 'src/app/services/lugar.service';
@@ -11,13 +13,13 @@ import { Lugar, LugarService } from 'src/app/services/lugar.service';
 })
 export class FormularioCancionComponent implements OnInit {
     @Input() modo : Modo;
-    @Input() cancionId : number;
+    @Input() cancion : Cancion;
+    
+    @Output() datosCargados : EventEmitter<number> = new EventEmitter<number>();
+    cantidadDeDatosCargados : number = 0;
 
     emociones : EmocionGeneral[] = [];
-    emocionSeleccionada : EmocionGeneral = {
-        nombre : "",
-        emociones : []
-    };
+    emocionSeleccionada : EmocionGeneral = EMOCION_GENERAL_VACIA;
     lugares : Lugar[] = [];
 
     // Form groups
@@ -25,35 +27,36 @@ export class FormularioCancionComponent implements OnInit {
     frmEmocion : FormGroup;
 
     // Controles formulario
-    registroCorrecto : boolean = false;
     formularioDefaultCanciones : any;
     formularioDefaultEmociones : any;
-    cancionObtenida : Cancion;
 
     constructor(
         private servicio : CancionService,
         private servicioEmociones : EmocionService,
         private servicioLugares : LugarService,
-        private formBuilder : FormBuilder) {}
+        private formBuilder : FormBuilder,
+        private router : Router) {}
 
     // EVENTOS
     // EVENTOS ANGULAR
     ngOnInit() {
-        if (this.cancionId != null) {
-            this.servicio.getCancionById(this.cancionId).subscribe(respuesta => {
-                this.cancionObtenida = respuesta;
-            });
-        }
-
         this.servicioEmociones.getEmociones().subscribe(respuesta => {
             this.emociones = respuesta;
+            this.cantidadDeDatosCargados ++;
+            this.datosCargados.emit(this.cantidadDeDatosCargados);
         });
 
         this.servicioLugares.getLugares().subscribe(respuesta => {
             this.lugares = respuesta;
+            this.cantidadDeDatosCargados ++;
+            this.datosCargados.emit(this.cantidadDeDatosCargados);
         });
 
-        this.crearFormulario();
+        this.datosCargados.subscribe(respuesta => {
+            if (respuesta == 2) {
+                this.crearFormulario(this.cancion);
+            }
+        });
     }
 
     // EVENTOS PROPIOS
@@ -70,16 +73,29 @@ export class FormularioCancionComponent implements OnInit {
 
         nuevaCancion = this.crearCancionDesdeFormulario(datosNuevaCancion);
 
-        this.servicio.guardarCancion(nuevaCancion).subscribe(respuesta => {
-            if (respuesta.id != null) {
-                this.registroCorrecto = true;
+        switch (this.modo) {
+            case Modo.CREAR:
+                this.servicio.guardarCancion(nuevaCancion).subscribe(respuesta => {
+                    if (respuesta.id != null) {
+                        this.limpiarFormulario();
+                    }
+                });
 
-                this.limpiarFormulario();
-            }
-        });
+                break;
+
+            case Modo.EDITAR:
+                this.servicio.actualizarCancion(nuevaCancion).subscribe();
+
+                break;
+        }
+    }
+
+    onCancelar() {
+        this.router.navigate(['']);
     }
 
     limpiarFormulario() {
+        this.emocionSeleccionada = this.emociones.find(e => e.id == parseInt(this.formularioDefaultEmociones.emocionGeneral.value));
         this.frmCancion.reset(this.formularioDefaultCanciones);
     }
 
@@ -109,11 +125,12 @@ export class FormularioCancionComponent implements OnInit {
 
     crearCancionDesdeFormulario(datosCancion : any) : Cancion {
         let cancion : Cancion = {
+            id : this.modo == Modo.EDITAR ? parseInt(this.frmCancion.getRawValue().id) : null,
             nombre : datosCancion.nombre,
             link : datosCancion.url,
             origen : datosCancion.origen,
-            emocion : this.emocionSeleccionada.emociones[datosCancion.emocion.emocionEspecifica],
-            lugar : this.lugares[datosCancion.lugar],
+            emocion : this.emocionSeleccionada.emociones.find(e => e.id == parseInt(datosCancion.emocion.emocionEspecifica)),
+            lugar : this.lugares.find(l => l.id == parseInt(datosCancion.lugar)),
             extras : datosCancion.extra
         };
 
@@ -144,11 +161,18 @@ export class FormularioCancionComponent implements OnInit {
 
     buscarEmocionGeneralDesdeEspecifica(emocionEspecifica : EmocionEspecifica) : EmocionGeneral {
         let emocionGeneral : EmocionGeneral;
-
+        
         if (emocionEspecifica.id == -1) {
             emocionGeneral = EMOCION_GENERAL_VACIA;
         } else {
-            emocionGeneral = this.emociones.find(e => e.emociones.includes(emocionEspecifica));
+            emocionGeneral = this.emociones.find(eg => {
+                let emocion : EmocionEspecifica;
+                emocion = eg.emociones.find(ee => ee.id == emocionEspecifica.id);
+
+                return emocion != null;
+            });
+
+            this.emocionSeleccionada = emocionGeneral;
         }
 
         return emocionGeneral;
@@ -164,7 +188,7 @@ export class FormularioCancionComponent implements OnInit {
             },
             emocionEspecifica : {
                 value : cancion.emocion.id,
-                disabled : true
+                disabled : this.modo != Modo.EDITAR
             }
         };
 
