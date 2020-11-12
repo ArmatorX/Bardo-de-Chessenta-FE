@@ -34,6 +34,10 @@ export class CancionService {
         return this._http.delete(this._url.getUrlBaseCancion() + cancion.id.toString())
     }
 
+    getCancionById(id : number) : Observable<Cancion> {
+        return this._http.get<Cancion>(this._url.getUrlBaseCancion() + id.toString());
+    }
+
     buscarCancionSimple(nroPagina : number, txtBuscar? : string, emocionGeneral? : EmocionGeneral, emocionEspecifica? : EmocionEspecifica) : Observable<any> {
         let params = new HttpParams();
 

@@ -11,6 +11,7 @@ import { Lugar, LugarService } from 'src/app/services/lugar.service';
 })
 export class FormularioCancionComponent implements OnInit {
     @Input() modo : Modo;
+    @Input() cancionId : number;
 
     emociones : EmocionGeneral[] = [];
     emocionSeleccionada : EmocionGeneral = {
@@ -37,6 +38,10 @@ export class FormularioCancionComponent implements OnInit {
     // EVENTOS
     // EVENTOS ANGULAR
     ngOnInit() {
+        if (this.cancionId != null) {
+            this.servicio.getCancionById(this.cancionId);
+        }
+
         this.servicioEmociones.getEmociones().subscribe(respuesta => {
             this.emociones = respuesta;
         });
