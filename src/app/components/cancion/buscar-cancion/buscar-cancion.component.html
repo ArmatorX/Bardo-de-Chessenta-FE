@@ -59,7 +59,7 @@
     <div class="row">
         <div class="col">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                     <thead class="thead-dark">
                         <tr>
                             <th class="col-3">Nombre</th>
@@ -73,7 +73,7 @@
                     <tbody>
                         <tr *ngFor="let cancion of canciones">
                         <!-- <tr> -->
-                            <td><p>{{ cancion.nombre }}</p></td>
+                            <td><p><a href="/consultar-cancion/{{ cancion.id }}">{{ cancion.nombre }}</a></p></td>
                             <td><p>{{ cancion.extras }}</p></td>
                             <td><p>{{ cancion.emocion.nombre }}</p></td>
                             <td><p>{{ cancion.lugar.nombre }}</p></td>
@@ -88,11 +88,11 @@
                                     <span data-feather="play"></span>
                                 </button>
 
-                                <button class="btn btn-primary btn-sm m-1" disabled>
+                                <button class="btn btn-primary btn-sm m-1" data-toggle="tooltip" data-placement="top" title="No disponible." disabled>
                                     <span data-feather="plus"></span>
                                 </button>
 
-                                <button class="btn btn-primary btn-sm m-1">
+                                <button class="btn btn-primary btn-sm m-1" (click)="editarCancion(cancion.id)">
                                     <span data-feather="edit"></span>
                                 </button>
 

@@ -50,8 +50,7 @@ export class BuscarCancionComponent implements OnInit {
         private servicio : CancionService,
         private servicioEmociones : EmocionService,
         private servicioLugares : LugarService,
-        private router : Router,
-        private route : ActivatedRoute) { }
+        private router : Router) { }
 
     // EVENTOS
     // EVENTOS DE ANGULAR
@@ -216,7 +215,7 @@ export class BuscarCancionComponent implements OnInit {
         this.reiniciarMensajes();
     }
 
-    actualizarTablaCanciones() {
+    actualizarTablaCanciones() : void {
         if (this.seRealizoBusqueda)  {
             this.buscarSimple(this.txtBuscar, 
                 this.emocionGeneralSeleccionada,
@@ -224,5 +223,9 @@ export class BuscarCancionComponent implements OnInit {
         } else {
             this.getCanciones();
         }
+    }
+
+    editarCancion(cancionId : number) : void {
+        this.router.navigate(['/editar-cancion/' + cancionId.toString()])
     }
 }
