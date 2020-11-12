@@ -7,8 +7,8 @@ export class UrlService {
     private urlBase : string = "http://localhost:8080/";
     private urlBaseCancion : string = this.urlBase + "canciones/";
     private urlBaseReproductor : string = this.urlBaseCancion + "reproducir/";
-    private urlBaseLugar : string = this.urlBase + "lugar/";
-    private urlBaseEmocionEspecifica : string = this.urlBase + "emociones-especificas/";
+    private urlBaseLugar : string = this.urlBase + "lugares/";
+    private urlBaseEmocion : string = this.urlBase + "emociones/";
 
     constructor() { }
 
@@ -23,12 +23,11 @@ export class UrlService {
     getUrlBaseLugar() : string {
         return this.urlBaseLugar;
     }
-
-    getUrlBaseEmocionEspecifica() : string {
-        return this.urlBaseEmocionEspecifica;
-    }
-
     getUrlBaseReproductor() : string {
         return this.urlBaseReproductor;
+    }
+    
+    getUrlBaseEmocion() : string {
+        return this.urlBaseEmocion;
     }
 }

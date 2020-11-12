@@ -1,0 +1,66 @@
+td p {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+#botones {
+    min-width: 250px;
+}
+
+/* 
+ * Los form-inline de Boostrap no se pueden 
+ * cambiar de tamaño usando clases de Bootstrap.
+ */
+#form-buscar, #txt-buscar {
+    width: 100%;
+}
+
+#cmb-emocion-general, #cmb-emocion-especifica {
+    width: 45%;
+}
+
+#txt-buscar-group {
+    width: 55%;
+}
+
+#cmb-emociones-group {
+    width: 35%;
+}
+
+#pag-control {
+    min-width: 280px;
+}
+
+/* Tamaño de pantalla medium */
+@media (min-width: 768px) and (max-width: 992px) {
+    #txt-buscar-group {
+        width: 40%;
+    }
+    
+    #cmb-emociones-group {
+        width: 40%;
+    }
+}
+
+/* Tamaño de pantalla small */
+@media (min-width: 576px) and (max-width: 767px) {
+    #txt-buscar-group {
+        width: 35%;
+    }
+    
+    #cmb-emociones-group {
+        width: 40%;
+    }
+}
+
+/* Tamaño de pantalla extra small */
+@media (max-width: 575px) {
+    #txt-buscar-group {
+        width: 70%;
+        margin-bottom: 0;
+    }
+    
+    #cmb-emociones-group {
+        display: none;
+    }
+}
