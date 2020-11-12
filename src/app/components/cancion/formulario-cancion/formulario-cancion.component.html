@@ -1,3 +1,7 @@
+<div class="alert alert-success mt-4"  role="alert" *ngIf="registroCorrecto">
+    La canción se registró correctamente.
+</div>
+
 <!-- Formulario CRUD Canción -->
 <form [formGroup]="frmCancion" (ngSubmit)="onSubmit(frmCancion.value)" *ngIf="frmCancion != null">
     <!-- Id de la canción -->
@@ -82,9 +86,19 @@
         Cancelar
     </button>
 
-    <button type="button" class="btn mr-2 btn-danger" (click)="limpiarFormulario()" *ngIf="modo != 2">
+    <button type="button" class="btn mr-2 btn-primary" (click)="onCancelar()" *ngIf="modo == 2">
+        <span data-feather="arrow-left"></span>
+        Volver
+    </button>
+
+    <button type="button" class="btn mr-2 btn-danger" (click)="limpiarFormulario()" *ngIf="modo == 0">
         <span data-feather="trash"></span>
         Limpiar formulario
+    </button>
+
+    <button type="button" class="btn mr-2 btn-danger" (click)="limpiarFormulario()" *ngIf="modo == 1">
+        <span data-feather="trash"></span>
+        Deshacer cambios
     </button>
 
     <button type="submit" class="btn btn-primary" [disabled]="!frmCancion.valid" *ngIf="modo == 0">
@@ -97,7 +111,7 @@
         Confirmar edición
     </button>
     
-    <button type="button" class="btn btn-primary" *ngIf="modo == 2">
+    <button type="button" class="btn btn-primary" (click)="onEditarCancion()" *ngIf="modo == 2">
         <span data-feather="edit"></span>
         Editar canción
     </button>

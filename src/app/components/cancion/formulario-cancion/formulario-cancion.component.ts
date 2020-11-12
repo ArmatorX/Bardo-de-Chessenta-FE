@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { timingSafeEqual } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
 import { Cancion, CancionService, CANCION_VACIA } from 'src/app/services/cancion.service';
 import { EmocionEspecifica, EmocionGeneral, EmocionService, EMOCION_GENERAL_VACIA } from 'src/app/services/emocion.service';
@@ -13,7 +14,16 @@ import { Lugar, LugarService } from 'src/app/services/lugar.service';
 })
 export class FormularioCancionComponent implements OnInit {
     @Input() modo : Modo;
-    @Input() cancion : Cancion;
+
+    private _cancion : BehaviorSubject<Cancion> = new BehaviorSubject<Cancion>(null);
+
+    @Input() set cancion(value : Cancion) {
+        this._cancion.next(value);
+    }
+
+    get cancion() : Cancion {
+        return this._cancion.getValue();
+    }
     
     @Output() datosCargados : EventEmitter<number> = new EventEmitter<number>();
     cantidadDeDatosCargados : number = 0;
@@ -29,6 +39,7 @@ export class FormularioCancionComponent implements OnInit {
     // Controles formulario
     formularioDefaultCanciones : any;
     formularioDefaultEmociones : any;
+    registroCorrecto = false;
 
     constructor(
         private servicio : CancionService,
@@ -52,8 +63,15 @@ export class FormularioCancionComponent implements OnInit {
             this.datosCargados.emit(this.cantidadDeDatosCargados);
         });
 
+        this._cancion.subscribe(respuesta => {
+            if (this.modo == Modo.CREAR || respuesta != null) {
+                this.cantidadDeDatosCargados ++;
+                this.datosCargados.emit(this.cantidadDeDatosCargados);
+            }
+        });
+
         this.datosCargados.subscribe(respuesta => {
-            if (respuesta == 2) {
+            if (respuesta == 3) {
                 this.crearFormulario(this.cancion);
             }
         });
@@ -78,13 +96,17 @@ export class FormularioCancionComponent implements OnInit {
                 this.servicio.guardarCancion(nuevaCancion).subscribe(respuesta => {
                     if (respuesta.id != null) {
                         this.limpiarFormulario();
+
+                        this.registroCorrecto = true;
                     }
                 });
 
                 break;
 
             case Modo.EDITAR:
-                this.servicio.actualizarCancion(nuevaCancion).subscribe();
+                this.servicio.actualizarCancion(nuevaCancion).subscribe(respuesta => {
+                    this.router.navigate['/consultar-cancion/' + respuesta.id.toString()];
+                });
 
                 break;
         }
@@ -92,6 +114,10 @@ export class FormularioCancionComponent implements OnInit {
 
     onCancelar() {
         this.router.navigate(['']);
+    }
+
+    onEditarCancion() {
+        this.router.navigate(['/editar-cancion/' + this.cancion.id.toString()]);
     }
 
     limpiarFormulario() {
