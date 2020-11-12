@@ -26,3 +26,14 @@ export interface EmocionEspecifica {
     id? : number;
     nombre : string;
 }
+
+export const EMOCION_ESPECIFICA_VACIA : EmocionEspecifica = {
+    id : -1,
+    nombre : ''
+}
+
+export const EMOCION_GENERAL_VACIA : EmocionGeneral = {
+    id : -1,
+    nombre : '',
+    emociones : []
+}

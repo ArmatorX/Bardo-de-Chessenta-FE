@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UrlService } from './api/url.service';
-import { EmocionEspecifica, EmocionGeneral } from './emocion.service';
-import { Lugar } from './lugar.service';
+import { EmocionEspecifica, EmocionGeneral, EMOCION_ESPECIFICA_VACIA } from './emocion.service';
+import { Lugar, LUGAR_VACIO } from './lugar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -67,3 +67,13 @@ export interface Cancion {
     lugar : Lugar;
     extras : string;
 }
+
+export const CANCION_VACIA : Cancion = {
+    id : -1,
+    nombre : '',
+    link : '',
+    origen : '',
+    emocion : EMOCION_ESPECIFICA_VACIA,
+    lugar : LUGAR_VACIO,
+    extras : ''
+};

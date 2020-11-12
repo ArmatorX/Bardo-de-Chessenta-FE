@@ -20,3 +20,8 @@ export interface Lugar {
     id? : number;
     nombre : string;
 }
+
+export const LUGAR_VACIO : Lugar = {
+    id : -1,
+    nombre : ''
+}

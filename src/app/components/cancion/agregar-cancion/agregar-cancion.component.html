@@ -1,6 +1,6 @@
-<div class="alert alert-success mt-4 col-10"  role="alert" *ngIf="registroCorrecto">
+<!-- <div class="alert alert-success mt-4 col-10"  role="alert" *ngIf="registroCorrecto">
     La canción se registró correctamente.
-</div>
+</div> -->
 
 <h1 class="mt-4 title">Agregar canción</h1>
 
@@ -9,80 +9,7 @@
 
     <div class="col-lg-7 col-md-9">
         <!-- Formulario Agregar Canción -->
-        <form [formGroup]="frmCancion" (ngSubmit)="onSubmit(frmAgregarCancion.value)">
-            <!-- Nombre de la canción -->
-            <div class="mt-3 form-group">
-                <label>Nombre:</label>
-                <input type="text" class="form-control" placeholder="Castle Theme" formControlName="nombre">
-            </div>
-
-            <!-- BSO de la canción -->
-            <div class="form-group">
-                <label>Origen:</label>
-                <input type="text" class="form-control" placeholder="The Legend of Zelda OST" formControlName="origen">
-            </div>
-
-            <!-- Link de la canción -->
-            <div class="form-group">
-                <label>URL:</label>
-                <input type="url" class="form-control" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxx" formControlName="url">
-            </div>
-
-            <!-- Emoción de la canción -->
-            <div class="form-row" formGroupName="emocion">
-                <!-- Emoción General -->
-                <div class="form-group col">
-                    <label>Emoción general:</label>
-
-                    <select class="form-control" formControlName="emocionGeneral" (change)="onCambioSeleccionEmocionGeneral($event.target.value)">
-                        <option hidden disabled selected [value]="-1">
-                            - Seleccionar -
-                        </option>
-
-                        <option [value]="i" *ngFor="let emocionGeneral of emociones; index as i">
-                            {{ emocionGeneral.nombre }}
-                        </option>
-                    </select>
-                </div>
-
-                <!-- Emoción Específica -->
-                <div class="form-group col">
-                    <label>Emoción específica:</label>
-                    <select class="form-control" formControlName="emocionEspecifica">
-                        <option hidden disabled selected [value]="-1">
-                            - Seleccionar -
-                        </option>
-
-                        <option [value]="j" *ngFor="let emocionEspecifica of emocionSeleccionada.emociones; index as j">
-                            {{ emocionEspecifica.nombre }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Lugar de la canción -->
-            <div class="form-group">
-                <label>Lugar:</label>
-                <select class="form-control" formControlName="lugar">
-                    <option hidden disabled selected [value]="-1">
-                        - Seleccionar -
-                    </option>
-
-                    <option [value]="k" *ngFor="let lugar of lugares; index as k">
-                        {{ lugar.nombre }}
-                    </option>
-                </select>
-            </div>
-
-            <!-- Observaciones -->
-            <div class="form-group">
-                <label>Extra (opcional):</label>
-                <input type="text" class="form-control" placeholder="Temardo para el final boss" formControlName="extra">
-            </div>
-            
-            <button type="button" class="btn mr-2 btn-danger" (click)="limpiarFormulario()">Limpiar formulario</button>
-            <button type="submit" class="btn btn-primary" [disabled]="!frmAgregarCancion.valid">Agregar canción</button>
-        </form>
+        <app-formulario-cancion [modo]="modo"></app-formulario-cancion>
     </div>
     
     <div class="col"></div>
