@@ -28,6 +28,7 @@ export class FormularioCancionComponent implements OnInit {
     registroCorrecto : boolean = false;
     formularioDefaultCanciones : any;
     formularioDefaultEmociones : any;
+    cancionObtenida : Cancion;
 
     constructor(
         private servicio : CancionService,
@@ -39,7 +40,9 @@ export class FormularioCancionComponent implements OnInit {
     // EVENTOS ANGULAR
     ngOnInit() {
         if (this.cancionId != null) {
-            this.servicio.getCancionById(this.cancionId);
+            this.servicio.getCancionById(this.cancionId).subscribe(respuesta => {
+                this.cancionObtenida = respuesta;
+            });
         }
 
         this.servicioEmociones.getEmociones().subscribe(respuesta => {
