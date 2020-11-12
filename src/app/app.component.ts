@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, enableProdMode, OnInit } from '@angular/core';
 import * as Feather from 'feather-icons';
 import $ from 'jquery';
 import 'bootstrap';
@@ -14,10 +14,12 @@ export class AppComponent implements OnInit {
     
     constructor () { }
 
-    ngOnInit() { }
+    ngOnInit() { 
+        enableProdMode();
+    }
 
     ngAfterViewChecked() {
         $('[data-toggle="tooltip"]').tooltip();
-        Feather.replace();
+        Feather.replace(); 
     }
 }
