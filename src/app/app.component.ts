@@ -14,9 +14,7 @@ export class AppComponent implements OnInit {
     
     constructor () { }
 
-    ngOnInit() { 
-        //enableProdMode();
-    }
+    ngOnInit() { }
 
     ngAfterViewChecked() {
         $('[data-toggle="tooltip"]').tooltip();
